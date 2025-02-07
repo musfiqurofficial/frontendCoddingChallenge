@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Product } from "@/types";
 import { ProductModal } from "@/views/products/productModal/productModal";
 import { BackToHome } from "@/components/backToHome/backToHome";
@@ -11,6 +12,9 @@ import { PRODUCTS_DATA } from "@/data/productsData";
 
 export const Products: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const {
     currentPage,
     totalPages,
@@ -20,11 +24,26 @@ export const Products: React.FC = () => {
 
   const handleOpenModal = useCallback((product: Product) => {
     setSelectedProduct(product);
-  }, []);
+    router.push(`/products?product=${product.id}`); 
+  }, [router]);
 
   const handleCloseModal = useCallback(() => {
     setSelectedProduct(null);
-  }, []);
+    router.push(`/products`);
+  }, [router]);
+
+  useEffect(() => {
+    const modalId = searchParams.get("product");
+
+    if (modalId) {
+      const product = PRODUCTS_DATA.find((p) => p.id.toString() === modalId);
+      if (product) {
+        setSelectedProduct(product);
+      }
+    } else {
+      setSelectedProduct(null);
+    }
+  }, [searchParams]);
 
   return (
     <div>

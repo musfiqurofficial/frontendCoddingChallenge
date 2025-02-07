@@ -1,19 +1,16 @@
-"use client";
-
 import { BackToHome } from "@/components/backToHome/backToHome";
-import { useUserAgentContext } from "@/components/providers/userAgentProvider";
+import { headers } from "next/headers";
 
-export const UserAgent = () => {
-  const { userAgent } = useUserAgentContext();
+const UserAgent = async () => {
+  const userAgent = typeof window === "undefined" ? headers().get("user-agent") : "No user agent";
 
   return (
     <div>
       <BackToHome />
-
+      
       {userAgent && (
         <div className="flex font-mono font-semibold text-sm">
-          <div className="border p-2">UserAgent</div>
-
+          <div className="border p-2">User Agent</div>
           <div className="border p-2">{userAgent}</div>
         </div>
       )}
@@ -22,3 +19,5 @@ export const UserAgent = () => {
     </div>
   );
 };
+
+export default UserAgent;
